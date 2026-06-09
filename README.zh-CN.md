@@ -16,7 +16,7 @@
 - **索引自动生成**——以生成器形式运行，`hexo g` 和 `hexo s` 都会产出最新的 `search.json`。
 - **纯前端即时搜索**——标题 + 全文匹配，命中片段高亮，输入防抖。
 - **键盘优先**——⌘K / Ctrl+K 唤起，↑/↓ 导航，↵ 打开，Esc 关闭。
-- **三种触发方式**——⌘K 快捷键、可选浮动按钮，以及主题自行放置的任意 `[data-spotlight-toggle]` 元素。
+- **多种触发方式**——⌘K 快捷键、可选浮动按钮、把默认搜索图标嵌到任意位置的 `spotlight_icon()` helper，以及主题自行放置的任意 `[data-spotlight-toggle]` 元素。
 - **多语言**——内置 en、zh-CN、zh-TW、ja、ko、fr、de、es、ru、pt，按站点语言自动识别，可完全自定义。
 - **主题感知样式**——自带 `--spotlight-*` CSS 变量，自动适配浅/深色（`prefers-color-scheme` + 常见暗色选择器）。
 - **零运行时依赖**——不用 jQuery、不用框架，约 7KB 原生 JS。
@@ -45,6 +45,8 @@ spotlight:
   hotkey: true            # ⌘K / Ctrl+K 唤起
   button: true            # 显示浮动搜索按钮
   buttonPosition: bottom-right  # bottom-right | bottom-left | top-right | top-left
+  # 样式
+  highlightColor: null    # 搜索关键词高亮色；背景底色会自动推导
   # 多语言
   language: null          # 强制指定语言码；默认跟随站点 `language`
   strings:                # 覆盖单条文案（可选）
@@ -56,10 +58,26 @@ spotlight:
 
 ### 在主题里触发搜索
 
-浮动按钮和 ⌘K 无需任何设置即可用。若要加自己的入口（比如顶栏的放大镜图标），给任意元素加上 `data-spotlight-toggle` 属性即可：
+浮动按钮和 ⌘K 无需任何设置即可用。若要把**默认的放大镜搜索图标**嵌到主题的某个位置（顶栏、导航、侧边栏），用 `spotlight_icon()` helper 一行即可——它渲染的就是同款放大镜图标，点击打开浮层：
+
+```ejs
+<%- spotlight_icon() %>
+```
+
+可以传一个可选的类名，方便定制样式或定位：
+
+```ejs
+<%- spotlight_icon('nav-search') %>
+```
+
+图标默认继承周围文字颜色（`currentColor`），所以能自动融入任意主题。
+
+更想用纯 HTML，或者主题不是 EJS？任意带 `data-spotlight-toggle` 属性的元素都是触发器：
 
 ```html
-<a href="#" data-spotlight-toggle aria-label="搜索">🔍</a>
+<button class="spotlight-trigger" data-spotlight-toggle aria-label="搜索">
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+</button>
 ```
 
 也可以编程式调用：
@@ -71,7 +89,14 @@ window.spotlight.close();
 
 ### 自定义样式
 
-在主题 CSS 里覆盖任意 `--spotlight-*` 变量，即可贴合你的品牌色：
+要改搜索关键词的高亮色，最快的方式是 `highlightColor` 配置项——半透明的背景底色会自动从它推导：
+
+```yaml
+spotlight:
+  highlightColor: '#e0567a'
+```
+
+需要更精细的控制时，在主题 CSS 里覆盖任意 `--spotlight-*` 变量：
 
 ```css
 :root {

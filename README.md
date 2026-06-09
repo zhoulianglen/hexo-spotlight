@@ -16,7 +16,7 @@ Most Hexo search plugins (`hexo-generator-search`, `hexo-generator-searchdb`) on
 - **Auto-generated index** — runs as a generator, so `hexo g` and `hexo s` always produce a fresh `search.json`.
 - **Instant client-side search** — title + full-text matching, highlighted snippets, debounced input.
 - **Keyboard first** — ⌘K / Ctrl+K to open, ↑/↓ to navigate, ↵ to open, Esc to close.
-- **Three ways to trigger** — the ⌘K hotkey, an optional floating button, and any `[data-spotlight-toggle]` element themes can place themselves.
+- **Many ways to trigger** — the ⌘K hotkey, an optional floating button, a `spotlight_icon()` helper that drops the default search icon anywhere, and any `[data-spotlight-toggle]` element themes can place themselves.
 - **Multi-language** — ships en, zh-CN, zh-TW, ja, ko, fr, de, es, ru, pt. Auto-detected from your site language, fully overridable.
 - **Theme-aware styling** — self-contained `--spotlight-*` CSS variables with light/dark auto-detection (`prefers-color-scheme` + common dark-mode selectors).
 - **Zero runtime dependencies** — no jQuery, no framework, ~7KB of vanilla JS.
@@ -45,6 +45,8 @@ spotlight:
   hotkey: true            # ⌘K / Ctrl+K opens the overlay
   button: true            # show a floating search button
   buttonPosition: bottom-right  # bottom-right | bottom-left | top-right | top-left
+  # styling
+  highlightColor: null    # color of matched search terms; background tint is auto-derived
   # i18n
   language: null          # force a language code; defaults to your site `language`
   strings:                # override individual labels (optional)
@@ -56,10 +58,26 @@ spotlight:
 
 ### Triggering search from your theme
 
-The floating button and ⌘K work with no setup. To add your own trigger (for example a magnifier icon in the header), give any element the `data-spotlight-toggle` attribute:
+The floating button and ⌘K work with no setup. To embed the **default search icon** somewhere in your theme (a header, nav, or sidebar), drop in the `spotlight_icon()` helper — it renders the same magnifier glyph and opens the overlay on click:
+
+```ejs
+<%- spotlight_icon() %>
+```
+
+Pass an optional class name to style or position it:
+
+```ejs
+<%- spotlight_icon('nav-search') %>
+```
+
+The icon inherits the surrounding text color (`currentColor`), so it blends into any theme automatically.
+
+Prefer plain HTML, or your theme isn't EJS? Any element with the `data-spotlight-toggle` attribute is a trigger:
 
 ```html
-<a href="#" data-spotlight-toggle aria-label="Search">🔍</a>
+<button class="spotlight-trigger" data-spotlight-toggle aria-label="Search">
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+</button>
 ```
 
 You can also open it programmatically:
@@ -71,7 +89,14 @@ window.spotlight.close();
 
 ### Styling
 
-Override any `--spotlight-*` custom property in your theme's CSS to match your brand:
+The quickest way to recolor highlighted search terms is the `highlightColor` config option — the translucent background tint is derived from it automatically:
+
+```yaml
+spotlight:
+  highlightColor: '#e0567a'
+```
+
+For finer control, override any `--spotlight-*` custom property in your theme's CSS:
 
 ```css
 :root {

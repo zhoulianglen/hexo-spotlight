@@ -19,15 +19,18 @@ function makePost(title, content, dateStr) {
 function makeHexo(language) {
   const generators = {};
   const injectors = {};
+  const helpers = {};
   return {
     config: { root: '/', language: language },
     theme: { config: {} },
     extend: {
       generator: { register: function (name, fn) { generators[name] = fn; } },
-      injector: { register: function (entry, fn) { (injectors[entry] = injectors[entry] || []).push(fn); } }
+      injector: { register: function (entry, fn) { (injectors[entry] = injectors[entry] || []).push(fn); } },
+      helper: { register: function (name, fn) { helpers[name] = fn; } }
     },
     _generators: generators,
-    _injectors: injectors
+    _injectors: injectors,
+    _helpers: helpers
   };
 }
 
@@ -36,9 +39,10 @@ function run(language, label) {
   delete require.cache[require.resolve('../index.js')];
   delete require.cache[require.resolve('../lib/generator.js')];
   delete require.cache[require.resolve('../lib/injector.js')];
+  delete require.cache[require.resolve('../lib/helper.js')];
 
   const hexo = makeHexo(language);
-  hexo.config.spotlight = { content: true };
+  hexo.config.spotlight = { content: true, highlightColor: '#e0567a' };
   global.hexo = hexo;
   require('../index.js');
 
@@ -71,6 +75,20 @@ function run(language, label) {
 
   const head = hexo._injectors.head_end[0]();
   assert.ok(head.indexOf('css/spotlight.css?v=') !== -1, 'css link carries a version query');
+
+  // highlightColor: an override <style> is injected after the stylesheet, with
+  // the accent set verbatim and the mark background auto-derived from the hex.
+  const headStyle = hexo._injectors.head_end.map(function (fn) { return fn(); }).join('');
+  assert.ok(headStyle.indexOf('--spotlight-accent:#e0567a') !== -1, 'highlight accent injected');
+  assert.ok(headStyle.indexOf('--spotlight-mark-bg:rgba(224, 86, 122, 0.14)') !== -1, 'mark bg auto-derived from hex');
+
+  // spotlight_icon() helper renders the default magnifier trigger.
+  assert.ok(typeof hexo._helpers.spotlight_icon === 'function', 'spotlight_icon helper registered');
+  const iconHtml = hexo._helpers.spotlight_icon();
+  assert.ok(iconHtml.indexOf('data-spotlight-toggle') !== -1, 'helper output is a toggle trigger');
+  assert.ok(iconHtml.indexOf('spotlight-trigger') !== -1, 'helper output carries the trigger class');
+  assert.ok(iconHtml.indexOf('<svg') !== -1, 'helper output includes the search icon');
+  assert.ok(hexo._helpers.spotlight_icon('nav-x').indexOf('spotlight-trigger nav-x') !== -1, 'helper appends extra class');
 
   const body = hexo._injectors.body_end[0]();
   assert.ok(body.indexOf('SPOTLIGHT_CONFIG') !== -1, 'runtime config injected');

@@ -4,6 +4,7 @@
 const { resolveStrings } = require('./lib/i18n');
 const registerGenerator = require('./lib/generator');
 const registerInjector = require('./lib/injector');
+const registerHelper = require('./lib/helper');
 
 const DEFAULT_CONFIG = {
   enable: true,
@@ -15,6 +16,8 @@ const DEFAULT_CONFIG = {
   hotkey: true,            // ⌘K / Ctrl+K opens the overlay
   button: true,            // inject a floating search button (bottom-right)
   buttonPosition: 'bottom-right',
+  // styling
+  highlightColor: null,    // override the search-term highlight color; bg is auto-derived
   // i18n
   language: null,          // override; falls back to hexo.config.language, then 'en'
   strings: null,           // object to override individual UI strings
@@ -47,4 +50,5 @@ if (config.enable !== false) {
 
   registerGenerator(hexo, config);
   registerInjector(hexo, config);
+  registerHelper(hexo, config);
 }

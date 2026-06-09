@@ -175,6 +175,24 @@ html[data-theme="dark"], html.dark, html.night, body.dark, [data-theme="dark"] {
 
 body.spotlight-open { overflow: hidden; }
 
+/* ---- Embeddable trigger (rendered by the `spotlight_icon()` helper) ---- */
+/* Inherits the surrounding text color so it blends into any header/nav/sidebar. */
+.spotlight-trigger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: none;
+  background: none;
+  color: inherit;
+  line-height: 0;
+  cursor: pointer;
+  -webkit-appearance: none;
+  appearance: none;
+  transition: opacity 0.15s ease;
+}
+.spotlight-trigger:hover { opacity: 0.7; }
+
 /* ---- Floating button ---- */
 .spotlight-fab {
   position: fixed;
