@@ -112,4 +112,28 @@ assert.notStrictEqual(enPlaceholder, zhPlaceholder, 'language switch changes str
 assert.strictEqual(zhPlaceholder, zhLowerPlaceholder, 'zh-cn resolves like zh-CN');
 assert.strictEqual(fallbackPlaceholder, enPlaceholder, 'unknown language falls back to English');
 
+// Sub-directory deploy: result URLs must carry the site `root` prefix, or links
+// 404 on GitHub Pages project sites. Regression guard for the root-prefix fix.
+(function subPathRoot() {
+  delete require.cache[require.resolve('../index.js')];
+  delete require.cache[require.resolve('../lib/generator.js')];
+  delete require.cache[require.resolve('../lib/injector.js')];
+  delete require.cache[require.resolve('../lib/helper.js')];
+
+  const hexo = makeHexo('en');
+  hexo.config.root = '/blog/';
+  hexo.config.spotlight = { content: false };
+  global.hexo = hexo;
+  require('../index.js');
+
+  const locals = {
+    posts: { toArray: function () { return [makePost('Hello World', '<p>x</p>', '2026.01.01')]; } },
+    pages: { toArray: function () { return []; } }
+  };
+  const data = JSON.parse(hexo._generators.spotlight_index(locals)
+    .find(function (o) { return o.path === 'search.json'; }).data);
+  assert.strictEqual(data[0].url, '/blog/hello-world/', 'result url carries the root prefix');
+  console.log('  [sub-path] url = ' + data[0].url);
+})();
+
 console.log('\n✓ all smoke tests passed');

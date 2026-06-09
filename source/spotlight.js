@@ -73,6 +73,10 @@
     function escapeHtml(s) {
       return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
     }
+    // Attribute context needs the quote escaped too, so a URL can't break out of href="…".
+    function escapeAttr(s) {
+      return String(s).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;');
+    }
     function snippet(content, q) {
       var idx = content.toLowerCase().indexOf(q);
       if (idx === -1) return '';
@@ -103,7 +107,7 @@
       results.innerHTML = matches.map(function (p) {
         var inTitle = p.title && p.title.toLowerCase().indexOf(q) !== -1;
         var snip = inTitle ? '' : (p.content ? snippet(p.content, q) : '');
-        return '<a class="spotlight-result" href="' + p.url + '">' +
+        return '<a class="spotlight-result" href="' + escapeAttr(p.url) + '">' +
                '<span class="spotlight-result-title">' + escapeHtml(p.title || '') + '</span>' +
                (snip ? '<span class="spotlight-result-snippet">' + snip + '</span>' : '') +
                (p.date ? '<span class="spotlight-result-date">' + escapeHtml(p.date) + '</span>' : '') +
