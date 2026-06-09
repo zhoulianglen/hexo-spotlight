@@ -1,6 +1,6 @@
 {
   "name": "hexo-spotlight",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Spotlight-style instant search for any Hexo theme. Zero dependencies, self-contained overlay UI, ⌘K hotkey, multi-language. Generates the index on hexo g/s and injects the UI into every page — no theme changes required.",
   "main": "index.js",
   "scripts": {
