@@ -1,0 +1,208 @@
+/* hexo-spotlight — self-contained styles. All classes are prefixed `spotlight-`
+   and all colors come from `--spotlight-*` custom properties so any theme can
+   override them without touching this file. */
+
+:root {
+  --spotlight-bg: #ffffff;
+  --spotlight-text: #1d1d1f;
+  --spotlight-text-dim: #79716b;
+  --spotlight-text-faint: #9a9a9a;
+  --spotlight-border: rgba(128, 128, 128, 0.15);
+  --spotlight-border-strong: rgba(128, 128, 128, 0.25);
+  --spotlight-hover: rgba(128, 128, 128, 0.1);
+  --spotlight-accent: #0071e3;
+  --spotlight-mark-bg: rgba(0, 113, 227, 0.14);
+  --spotlight-overlay-bg: rgba(0, 0, 0, 0.35);
+  --spotlight-shadow: 0 20px 60px rgba(0, 0, 0, 0.18);
+  --spotlight-fab-bg: #1d1d1f;
+  --spotlight-fab-text: #ffffff;
+}
+
+/* Dark mode: follow the OS preference, and also honor the conventions most
+   Hexo themes use to flag dark mode on <html>. */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --spotlight-bg: #2c2c2e;
+    --spotlight-text: #f5f5f7;
+    --spotlight-text-dim: #a6a09b;
+    --spotlight-text-faint: #8e8e93;
+    --spotlight-overlay-bg: rgba(0, 0, 0, 0.55);
+    --spotlight-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+    --spotlight-fab-bg: #f5f5f7;
+    --spotlight-fab-text: #1d1d1f;
+  }
+}
+html[data-theme="dark"], html.dark, html.night, body.dark, [data-theme="dark"] {
+  --spotlight-bg: #2c2c2e;
+  --spotlight-text: #f5f5f7;
+  --spotlight-text-dim: #a6a09b;
+  --spotlight-text-faint: #8e8e93;
+  --spotlight-overlay-bg: rgba(0, 0, 0, 0.55);
+  --spotlight-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+  --spotlight-fab-bg: #f5f5f7;
+  --spotlight-fab-text: #1d1d1f;
+}
+
+/* ---- Overlay ---- */
+.spotlight-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  background: var(--spotlight-overlay-bg);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 0 20px;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.2s ease, visibility 0.2s ease;
+}
+.spotlight-overlay.show { opacity: 1; visibility: visible; }
+
+.spotlight-panel {
+  margin-top: 12vh;
+  width: 100%;
+  max-width: 600px;
+  max-height: 70vh;
+  display: flex;
+  flex-direction: column;
+  background: var(--spotlight-bg);
+  color: var(--spotlight-text);
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: var(--spotlight-shadow);
+  transform: translateY(-12px);
+  transition: transform 0.2s ease;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+.spotlight-overlay.show .spotlight-panel { transform: translateY(0); }
+
+.spotlight-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 16px 18px;
+  border-bottom: 1px solid var(--spotlight-border);
+}
+.spotlight-bar-icon { color: var(--spotlight-text-dim); flex-shrink: 0; }
+.spotlight-input {
+  flex: 1;
+  min-width: 0;
+  border: none;
+  outline: none;
+  background: none;
+  font-family: inherit;
+  font-size: 16px;
+  color: var(--spotlight-text);
+}
+.spotlight-input::placeholder { color: var(--spotlight-text-dim); }
+.spotlight-close {
+  flex-shrink: 0;
+  border: none;
+  background: none;
+  padding: 2px;
+  cursor: pointer;
+  color: var(--spotlight-text-dim);
+  transition: color 0.2s ease;
+}
+.spotlight-close:hover { color: var(--spotlight-text); }
+
+.spotlight-status { padding: 14px 18px; font-size: 13px; color: var(--spotlight-text-dim); }
+
+.spotlight-results { flex: 1; min-height: 0; overflow-y: auto; }
+.spotlight-result {
+  display: block;
+  padding: 12px 18px;
+  border-bottom: 1px solid var(--spotlight-border);
+  transition: background 0.15s ease;
+  text-decoration: none;
+}
+.spotlight-result:last-child { border-bottom: none; }
+.spotlight-result:hover, .spotlight-result.is-active { background: var(--spotlight-hover); }
+.spotlight-result-title {
+  display: block;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--spotlight-text);
+  margin-bottom: 2px;
+}
+.spotlight-result-snippet {
+  display: block;
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--spotlight-text-dim);
+}
+.spotlight-result-date {
+  display: block;
+  margin-top: 4px;
+  font-size: 12px;
+  color: var(--spotlight-text-faint);
+}
+.spotlight-result mark {
+  background-color: var(--spotlight-mark-bg);
+  color: var(--spotlight-accent);
+  padding: 0 2px;
+  border-radius: 2px;
+}
+
+.spotlight-footer {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 18px;
+  flex-shrink: 0;
+  padding: 10px 18px;
+  border-top: 1px solid var(--spotlight-border);
+  font-size: 12px;
+  color: var(--spotlight-text-dim);
+}
+.spotlight-hint { display: inline-flex; align-items: center; gap: 4px; }
+.spotlight-footer kbd {
+  display: inline-block;
+  min-width: 18px;
+  padding: 1px 5px;
+  font-family: inherit;
+  font-size: 11px;
+  line-height: 1.5;
+  text-align: center;
+  color: var(--spotlight-text-dim);
+  background: var(--spotlight-hover);
+  border: 1px solid var(--spotlight-border-strong);
+  border-radius: 4px;
+}
+
+body.spotlight-open { overflow: hidden; }
+
+/* ---- Floating button ---- */
+.spotlight-fab {
+  position: fixed;
+  z-index: 99998;
+  width: 44px;
+  height: 44px;
+  border: none;
+  border-radius: 50%;
+  background: var(--spotlight-fab-bg);
+  color: var(--spotlight-fab-text);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.18);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+.spotlight-fab:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0, 0, 0, 0.24); }
+.spotlight-fab-bottom-right { right: 24px; bottom: 24px; }
+.spotlight-fab-bottom-left { left: 24px; bottom: 24px; }
+.spotlight-fab-top-right { right: 24px; top: 24px; }
+.spotlight-fab-top-left { left: 24px; top: 24px; }
+
+@media (max-width: 768px) {
+  .spotlight-panel { margin-top: 8vh; max-height: 80vh; }
+  .spotlight-footer { gap: 12px; font-size: 11px; }
+  .spotlight-fab { width: 40px; height: 40px; }
+  .spotlight-fab-bottom-right, .spotlight-fab-bottom-left { bottom: 16px; }
+  .spotlight-fab-bottom-right { right: 16px; }
+  .spotlight-fab-bottom-left { left: 16px; }
+}

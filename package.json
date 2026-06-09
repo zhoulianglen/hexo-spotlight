@@ -1,0 +1,46 @@
+{
+  "name": "hexo-spotlight",
+  "version": "1.0.0",
+  "description": "Spotlight-style instant search for any Hexo theme. Zero dependencies, self-contained overlay UI, ⌘K hotkey, multi-language. Generates the index on hexo g/s and injects the UI into every page — no theme changes required.",
+  "main": "index.js",
+  "scripts": {
+    "test": "node test/smoke.js"
+  },
+  "keywords": [
+    "hexo",
+    "hexo-plugin",
+    "search",
+    "local-search",
+    "instant-search",
+    "spotlight",
+    "cmdk",
+    "command-palette",
+    "i18n"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zhoulianglen/hexo-spotlight.git"
+  },
+  "homepage": "https://github.com/zhoulianglen/hexo-spotlight#readme",
+  "bugs": {
+    "url": "https://github.com/zhoulianglen/hexo-spotlight/issues"
+  },
+  "author": "zhoulianglen",
+  "license": "MIT",
+  "files": [
+    "index.js",
+    "lib/",
+    "source/",
+    "languages/"
+  ],
+  "engines": {
+    "node": ">=14"
+  },
+  "dependencies": {
+    "hexo-util": "^3.0.0",
+    "js-yaml": "^4.1.0"
+  },
+  "peerDependencies": {
+    "hexo": ">=5.0.0"
+  }
+}

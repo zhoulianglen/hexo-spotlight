@@ -1,0 +1,10 @@
+placeholder: 제목과 본문 검색…
+loading: 불러오는 중…
+empty: 일치하는 결과가 없습니다.
+failed: 검색 인덱스를 불러오지 못했습니다.
+close: 닫기
+label: 검색
+navigate: 이동
+select: 열기
+esc: 닫기
+button: 검색

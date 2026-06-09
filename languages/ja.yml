@@ -1,0 +1,10 @@
+placeholder: タイトルと本文を検索…
+loading: 読み込み中…
+empty: 一致する結果がありません。
+failed: 検索インデックスの読み込みに失敗しました。
+close: 閉じる
+label: 検索
+navigate: 移動
+select: 開く
+esc: 閉じる
+button: 検索

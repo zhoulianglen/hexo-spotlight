@@ -1,0 +1,10 @@
+placeholder: Search titles and content…
+loading: Loading…
+empty: No matching results.
+failed: Failed to load search index.
+close: Close
+label: Search
+navigate: navigate
+select: open
+esc: close
+button: Search
